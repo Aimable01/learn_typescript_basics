@@ -132,4 +132,24 @@ app.get(
   }
 );
 
+//------------transactions
+app.post("/trans", async (req: Request, res: Response): Promise<void> => {
+  try {
+    await db.transaction(async (tx) => {
+      try {
+        await tx
+          .insert(owner)
+          .values({ name: "owner1", email: "owner1@gmail" });
+      } catch (error) {
+        await tx.rollback();
+        throw error;
+      }
+    });
+    res.status(200).json({ message: "transaction active" });
+  } catch (error) {
+    console.log("An error in transaction: ", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 app.listen(3000, () => console.log("App running on port 3000."));
