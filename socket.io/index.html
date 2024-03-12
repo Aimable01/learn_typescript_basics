@@ -8,9 +8,32 @@
   <body>
     <h3>Sample chat app with socket.io</h3>
 
+    <div id="message"></div>
     <form id="form" action="">
       <input type="text" id="input" autocomplete="off" />
       <button type="submit">Send</button>
     </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const form = document.getElementById("form");
+      const input = document.getElementById("input");
+      const message = document.getElementById("message");
+
+      const socket = io();
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        socket.emit("chat message", input.value);
+        input.value = "";
+      });
+
+      socket.on("chat message", (msg) => {
+        const li = document.createElement("li");
+        li.textContent = msg;
+        message.appendChild(li);
+      });
+    </script>
   </body>
 </html>
